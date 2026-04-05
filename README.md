@@ -56,7 +56,7 @@ A modern, high-performance portfolio website built with **React**, **Three.js**,
 ## 🔗 Live Link
 
 Once hosted, you can access the live version at:
-👉 **[https://YOUR_HOSTING_LINK_HERE](https://YOUR_HOSTING_LINK_HERE)**
+👉 **[https://dutaverse.vercel.app](https://dutaverse.vercel.app)**
 
 ---
 
