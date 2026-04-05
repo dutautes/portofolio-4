@@ -1,0 +1,74 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+@import "tailwindcss";
+
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html {
+  scroll-behavior: smooth;
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  height: 100%;
+  background-color: #020617;
+}
+
+#root {
+  width: 100%;
+  min-height: 100svh;
+}
+
+/* Selection color */
+::selection {
+  background-color: rgba(103, 232, 249, 0.2);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #020617;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* bg/8 workaround for older Tailwind versions */
+.bg-white\/3 {
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+.bg-white\/8 {
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.hover\:bg-white\/8:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.hover\:bg-white\/12:hover {
+  background-color: rgba(255, 255, 255, 0.12);
+}
+
+.border-white\/8 {
+  border-color: rgba(255, 255, 255, 0.08);
+}
