@@ -5,7 +5,7 @@ import { translations } from '../translations';
 export const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const { lang, toggleLang } = useLanguage();
+  const { lang } = useLanguage();
   const t = translations[lang].nav;
 
   useEffect(() => {
@@ -63,29 +63,10 @@ export const Navbar = () => {
               {link.label}
             </button>
           ))}
-          
-          {/* Language Toggle */}
-          <button
-            onClick={toggleLang}
-            className="flex items-center gap-1.5 px-3 py-1 rounded-full border border-white/10 bg-white/5 hover:border-cyan-500/30 hover:bg-cyan-500/5 transition-all duration-300"
-            aria-label="Toggle language"
-          >
-            <span className={`text-[10px] font-bold ${lang === 'ID' ? 'text-cyan-400' : 'text-white/20'}`}>ID</span>
-            <div className="w-6 h-3 rounded-full bg-white/10 relative">
-              <div className={`absolute top-0.5 w-2 h-2 rounded-full bg-cyan-400 transition-all duration-300 ${lang === 'EN' ? 'right-0.5' : 'left-0.5'}`} />
-            </div>
-            <span className={`text-[10px] font-bold ${lang === 'EN' ? 'text-cyan-400' : 'text-white/20'}`}>EN</span>
-          </button>
         </div>
 
         {/* Mobile Controls */}
         <div className="flex items-center gap-4 md:hidden">
-          <button
-            onClick={toggleLang}
-            className="flex items-center px-2 py-1 rounded-md border border-white/10 bg-white/5 text-[10px] font-bold text-cyan-400"
-          >
-            {lang}
-          </button>
           <button
             className="text-white/60 hover:text-white transition"
             onClick={() => setMenuOpen(!menuOpen)}

@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { translations } from '../translations';
 
-const skills = ['JavaScript', 'React.js', 'Node.js', 'Express.js', 'AWS', 'Git/GitHub', 'UI/UX Design', 'AI Integration'];
+const skills = ['JavaScript', 'React.js', 'Node.js', 'Express.js', 'Laravel', 'Git/GitHub', 'UI/UX Design', 'AI Integration'];
 
 export const About = () => {
   const sectionRef = useRef(null);
@@ -29,7 +29,7 @@ export const About = () => {
     );
 
     if (sectionRef.current) observer.observe(sectionRef.current);
-    
+
     // Reset opacity when lang changes so it re-animates if visible
     const items = sectionRef.current?.querySelectorAll('[data-reveal]');
     items?.forEach(item => {
@@ -101,14 +101,14 @@ export const About = () => {
           <div className="rounded-xl bg-white/5 border border-white/8 p-5">
             <p className="text-xs text-white/40 mb-2">{t.eduTitle}</p>
             <ul className="space-y-2">
-               <li className="text-white/90 text-sm flex items-center gap-2">
-                 <span className="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>
-                 {t.edu1}
-               </li>
-               <li className="text-white/90 text-sm flex items-center gap-2">
-                 <span className="w-1.5 h-1.5 rounded-full bg-purple-400"></span>
-                 {t.edu2}
-               </li>
+              <li className="text-white/90 text-sm flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>
+                {t.edu1}
+              </li>
+              <li className="text-white/90 text-sm flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-purple-400"></span>
+                {t.edu2}
+              </li>
             </ul>
           </div>
         </div>

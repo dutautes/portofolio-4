@@ -50,7 +50,7 @@ export const Projects = () => {
     const currentCards = sectionRef.current?.querySelectorAll('[data-card]');
     currentCards?.forEach(card => {
       card.style.opacity = '0';
-      card.style.transform = 'translateY(30px)';
+      card.style.transform = 'translateY(40px)';
     });
 
     return () => observer.disconnect();
@@ -60,74 +60,99 @@ export const Projects = () => {
     <section
       id="projects"
       ref={sectionRef}
-      className="py-24 md:py-32 px-6 md:px-20 relative"
+      className="py-24 md:py-40 px-6 md:px-20 relative overflow-hidden"
     >
-      <div className="absolute left-1/2 top-0 -translate-x-1/2 w-96 h-64 bg-cyan-500/4 rounded-full blur-3xl pointer-events-none" />
+      {/* Background Ornaments */}
+      <div className="absolute left-1/2 top-0 -translate-x-1/2 w-full max-w-4xl h-64 bg-cyan-500/5 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute right-0 bottom-1/4 w-96 h-96 bg-purple-500/5 rounded-full blur-[120px] pointer-events-none" />
 
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-7xl mx-auto relative z-10">
         {/* Header */}
-        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4 mb-12">
-          <div>
-            <p className="text-xs font-semibold tracking-[0.2em] text-white/30 uppercase mb-3">
+        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4 mb-20 md:mb-28">
+          <div className="relative">
+            <p className="text-xs font-semibold tracking-[0.2em] text-cyan-400 uppercase mb-3 flex items-center gap-4">
+              <span className="w-12 h-px bg-cyan-400/50 block"></span>
               {t.title}
             </p>
-            <h2 className="text-3xl md:text-4xl font-bold text-white leading-tight">
+            <h2 className="text-4xl md:text-5xl font-black text-white leading-tight tracking-tight">
               {t.headline}
             </h2>
           </div>
-          <p className="text-white/40 text-sm max-w-xs leading-relaxed lg:text-right">
+          <p className="text-slate-400 text-sm md:text-base max-w-sm leading-relaxed lg:text-right">
             {t.sub}
           </p>
         </div>
 
-        {/* Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {t.items.map((project) => (
-            <div
-              key={`${project.id}-${lang}`}
-              data-card
-              id={`project-${project.id}`}
-              className="group rounded-2xl border border-white/10 bg-white/3 overflow-hidden hover:border-white/20 transition-all duration-300"
-              style={{ opacity: 0, transform: 'translateY(30px)', transition: 'opacity 0.6s ease, transform 0.6s ease, border-color 0.3s ease' }}
-            >
-              <div className={`h-48 bg-gradient-to-br ${gradients[project.id]} relative overflow-hidden`}>
-                <div className="absolute inset-0 opacity-40 bg-[radial-gradient(ellipse_at_top_right,rgba(255,255,255,0.08),transparent_60%)]" />
-              </div>
+        {/* Cards Grid - Asymmetric Layout */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 pb-12 lg:pb-32">
+          {t.items.map((project, index) => {
+            // Calculate staggering margin for asymmetric layout
+            const marginClass = index % 3 === 0 ? 'lg:translate-y-0' : index % 3 === 1 ? 'lg:translate-y-16' : 'lg:translate-y-32';
 
-              <div className="p-6">
-                <h3 className="text-white font-semibold text-lg mb-2">{project.title}</h3>
-                <p className="text-white/50 text-sm leading-relaxed mb-4 min-h-[60px]">{project.description}</p>
+            return (
+              <div
+                key={`${project.id}-${lang}`}
+                data-card
+                id={`project-${project.id}`}
+                className={`w-full ${marginClass}`}
+                style={{ opacity: 0, transform: 'translateY(40px)', transition: 'opacity 0.7s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1)' }}
+              >
+                {/* Inner Card handles pure CSS hover */}
+                <div className="group relative h-full rounded-[2rem] border border-white/5 bg-[#0a0f24] overflow-hidden transition-all duration-500 hover:-translate-y-4 hover:shadow-[0_20px_40px_-15px_rgba(34,211,238,0.15)] hover:border-cyan-500/30 flex flex-col">
+                  
+                  {/* Subtle inner glow */}
+                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none bg-[radial-gradient(ellipse_at_top,rgba(34,211,238,0.1),transparent_70%)]" />
 
-                <div className="flex flex-wrap gap-2 mb-6">
-                  {project.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="px-2.5 py-1 text-xs text-white/50 border border-white/10 rounded-full bg-white/5"
-                    >
-                      {tag}
-                    </span>
-                  ))}
+                  {/* Image Container */}
+                  <div className={`h-56 bg-gradient-to-br ${gradients[project.id]} relative overflow-hidden group-hover:after:absolute group-hover:after:inset-0 group-hover:after:bg-black/10`}>
+                    {project.image ? (
+                      <img src={project.image} alt={project.title} loading="lazy" className="w-full h-full object-cover opacity-70 mix-blend-overlay group-hover:mix-blend-normal group-hover:opacity-100 group-hover:scale-[1.03] transition-all duration-700" />
+                    ) : (
+                      <div className="absolute inset-0 opacity-40 bg-[radial-gradient(ellipse_at_top_right,rgba(255,255,255,0.08),transparent_60%)]" />
+                    )}
+                  </div>
+
+                  {/* Content Container */}
+                  <div className="p-8 flex flex-col flex-1 relative z-10">
+                    <h3 className="text-white font-bold text-xl mb-3 group-hover:text-cyan-400 transition-colors duration-300">{project.title}</h3>
+                    <p className="text-slate-400 text-sm leading-relaxed mb-6 flex-1">{project.description}</p>
+
+                    <div className="flex flex-wrap gap-2 mb-8">
+                      {project.tags.map((tag) => (
+                        <span
+                          key={tag}
+                          className="px-3 py-1 text-[11px] font-medium text-cyan-100/60 border border-cyan-500/10 rounded-full bg-cyan-500/5 group-hover:border-cyan-500/30 group-hover:text-cyan-100 transition-colors duration-300"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+
+                    <div className="flex gap-3 mt-auto">
+                      <a
+                        href={project.github}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center justify-center gap-2 p-3 rounded-full bg-white/5 border border-white/10 text-slate-300 hover:text-white hover:bg-white/10 transition-all duration-300 w-12"
+                        aria-label="GitHub Repository"
+                      >
+                        <GitHubIcon />
+                      </a>
+                      <a
+                        href={project.demo}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-full bg-transparent border border-cyan-500/30 text-cyan-400 text-sm font-semibold hover:bg-cyan-500 hover:text-slate-900 transition-all duration-300"
+                      >
+                        <ExternalIcon />
+                        Live Demo
+                      </a>
+                    </div>
+                  </div>
                 </div>
-
-                <div className="flex gap-3">
-                  <button
-                    id={`${project.id}-github`}
-                    className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-full bg-white/8 border border-white/10 text-white/60 text-sm hover:text-white hover:bg-white/12 transition-all duration-200"
-                  >
-                    <GitHubIcon />
-                    GitHub
-                  </button>
-                  <button
-                    id={`${project.id}-demo`}
-                    className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-full bg-cyan-300 hover:bg-cyan-200 text-slate-900 text-sm font-semibold transition-all duration-200"
-                  >
-                    <ExternalIcon />
-                    Live Demo
-                  </button>
-                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>
