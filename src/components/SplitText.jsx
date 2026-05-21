@@ -31,6 +31,7 @@ const SplitText = ({
     onCompleteRef.current = onLetterAnimationComplete;
   }, [onLetterAnimationComplete]);
 
+  // Kita wajib nunggu font selesai di-load browser dulu. Kalo ngga, kalkulasi lebar huruf dari GSAP bisa meleset dan bikin layout berantakan!
   useEffect(() => {
     if (document.fonts.status === 'loaded') {
       setFontsLoaded(true);
@@ -41,6 +42,7 @@ const SplitText = ({
     }
   }, []);
 
+  // useGSAP itu hook aman bawaan GreenSock khusus buat React
   useGSAP(
     () => {
       if (!isReady || !ref.current || !text || !fontsLoaded) return;
@@ -48,6 +50,7 @@ const SplitText = ({
       
       const el = ref.current;
 
+      // Konversi rootMargin dan threshold jadi format pemicu (start-point) ScrollTrigger
       const startPct = (1 - threshold) * 100;
       const marginMatch = /^(-?\d+(?:\.\d+)?)(px|em|rem|%)?$/.exec(rootMargin);
       const marginValue = marginMatch ? parseFloat(marginMatch[1]) : 0;
@@ -61,6 +64,7 @@ const SplitText = ({
       const start = `top ${startPct}%${sign}`;
 
       let targets;
+      // Nentuin target elemen mana yang mau dipecah: per huruf (chars), per kata (words), atau per baris (lines)
       const assignTargets = self => {
         if (splitType.includes('chars') && self.chars.length) targets = self.chars;
         if (!targets && splitType.includes('words') && self.words.length) targets = self.words;
@@ -68,6 +72,7 @@ const SplitText = ({
         if (!targets) targets = self.chars || self.words || self.lines;
       };
 
+      // Bikin instance SplitText dari GSAP buat motong string teks di DOM
       const splitInstance = new GSAPSplitText(el, {
         type: splitType,
         smartWrap: true,
@@ -78,6 +83,7 @@ const SplitText = ({
         reduceWhiteSpace: false,
         onSplit: self => {
           assignTargets(self);
+          // Jalankan animasi transisi dari posisi 'from' ke 'to'
           return gsap.fromTo(
             targets,
             { ...from },
@@ -85,11 +91,11 @@ const SplitText = ({
               ...to,
               duration,
               ease,
-              stagger: delay / 1000,
+              stagger: delay / 1000, // Stagger ngasih jeda waktu animasi antar huruf/kata biar berurutan
               scrollTrigger: {
                 trigger: el,
                 start,
-                once: true,
+                once: true, // Cukup sekali jalan aja pas di-scroll
                 fastScrollEnd: true,
                 anticipatePin: 0.4
               },
@@ -98,12 +104,13 @@ const SplitText = ({
                 onCompleteRef.current?.();
               },
               willChange: 'transform, opacity',
-              force3D: true
+              force3D: true // Pake GPU akselerasi biar lancar
             }
           );
         }
       });
 
+      // Cleanup function: matiin ScrollTrigger dan balikin teks utuh lagi pas komponen dibongkar (unmount)
       return () => {
         ScrollTrigger.getAll().forEach(st => {
           if (st.trigger === el) st.kill();

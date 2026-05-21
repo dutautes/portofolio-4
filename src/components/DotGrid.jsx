@@ -5,6 +5,7 @@ import { InertiaPlugin } from 'gsap/InertiaPlugin';
 
 gsap.registerPlugin(InertiaPlugin);
 
+// Fungsi throttle buat nge-limit panggilan fungsi biar ga keseringan (bagus buat hemat CPU pas mousemove)
 const throttle = (func, limit) => {
   let lastCall = 0;
   return function (...args) {
@@ -16,6 +17,7 @@ const throttle = (func, limit) => {
   };
 };
 
+// Fungsi pembantu buat ubah warna Hex (#5227FF) jadi RGB biasa biar kita bisa mainin gradasi warnanya pas dideketin mouse
 function hexToRgb(hex) {
   const m = hex.match(/^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i);
   if (!m) return { r: 0, g: 0, b: 0 };
@@ -44,6 +46,8 @@ const DotGrid = ({
   const wrapperRef = useRef(null);
   const canvasRef = useRef(null);
   const dotsRef = useRef([]);
+  
+  // Nyimpen status pointer (mouse) kayak posisi, kecepatan (vx, vy), dan koordinat terakhirnya
   const pointerRef = useRef({
     x: 0,
     y: 0,
@@ -58,6 +62,7 @@ const DotGrid = ({
   const baseRgb = useMemo(() => hexToRgb(baseColor), [baseColor]);
   const activeRgb = useMemo(() => hexToRgb(activeColor), [activeColor]);
 
+  // Kita bikin Path2D buat lingkaran titik biar gambarnya cepet dan ga usah kalkulasi path baru tiap frame
   const circlePath = useMemo(() => {
     if (typeof window === 'undefined' || !window.Path2D) return null;
 
@@ -66,13 +71,14 @@ const DotGrid = ({
     return p;
   }, [dotSize]);
 
+  // Fungsi buat ngitung dan bikin posisi titik-titik grid menyesuaikan ukuran layar (responsif)
   const buildGrid = useCallback(() => {
     const wrap = wrapperRef.current;
     const canvas = canvasRef.current;
     if (!wrap || !canvas) return;
 
     const { width, height } = wrap.getBoundingClientRect();
-    const dpr = window.devicePixelRatio || 1;
+    const dpr = window.devicePixelRatio || 1; // Biar tetep tajem di layar Retina/HiDPI
 
     canvas.width = width * dpr;
     canvas.height = height * dpr;
@@ -99,12 +105,14 @@ const DotGrid = ({
       for (let x = 0; x < cols; x++) {
         const cx = startX + x * cell;
         const cy = startY + y * cell;
+        //cx, cy itu posisi asli titik. xOffset, yOffset itu pergeseran pas ditiup mouse/klik
         dots.push({ cx, cy, xOffset: 0, yOffset: 0, _inertiaApplied: false });
       }
     }
     dotsRef.current = dots;
   }, [dotSize, gap]);
 
+  // Effect buat nge-render/menggambar ulang canvas pake requestAnimationFrame biar dapet 60fps mulus
   useEffect(() => {
     if (!circlePath) return;
 
@@ -128,6 +136,7 @@ const DotGrid = ({
         const dsq = dx * dx + dy * dy;
 
         let style = baseColor;
+        // Kalo jarak titik ke mouse deket, ubah warnanya (gradasi)
         if (dsq <= proxSq) {
           const dist = Math.sqrt(dsq);
           const t = 1 - dist / proximity;
@@ -151,6 +160,7 @@ const DotGrid = ({
     return () => cancelAnimationFrame(rafId);
   }, [proximity, baseColor, activeRgb, baseRgb, circlePath]);
 
+  // Observer buat nge-resize canvas kalo ukuran layarnya berubah
   useEffect(() => {
     buildGrid();
     let ro = null;
@@ -166,6 +176,7 @@ const DotGrid = ({
     };
   }, [buildGrid]);
 
+  // Effect untuk ngedeteksi pergerakan mouse dan klik di window
   useEffect(() => {
     const onMove = e => {
       const now = performance.now();
@@ -176,6 +187,8 @@ const DotGrid = ({
       let vx = (dx / dt) * 1000;
       let vy = (dy / dt) * 1000;
       let speed = Math.hypot(vx, vy);
+      
+      // Batasi kecepatan maks biar animasinya ga lebay
       if (speed > maxSpeed) {
         const scale = maxSpeed / speed;
         vx *= scale;
@@ -193,6 +206,8 @@ const DotGrid = ({
       pr.x = e.clientX - rect.left;
       pr.y = e.clientY - rect.top;
 
+      // Loop semua titik, kalo mouse-nya lewat dengan cepet (speed > speedTrigger), 
+      // dorong titik-titik tersebut menjauh menggunakan animasi Inertia dari GSAP
       for (const dot of dotsRef.current) {
         const dist = Math.hypot(dot.cx - pr.x, dot.cy - pr.y);
         if (speed > speedTrigger && dist < proximity && !dot._inertiaApplied) {
@@ -200,6 +215,8 @@ const DotGrid = ({
           gsap.killTweensOf(dot);
           const pushX = dot.cx - pr.x + vx * 0.005;
           const pushY = dot.cy - pr.y + vy * 0.005;
+          
+          // GSAP Inertia dorong objek trus balikin ke posisi semula pake efek membal (elastic.out)
           gsap.to(dot, {
             inertia: { xOffset: pushX, yOffset: pushY, resistance },
             onComplete: () => {
@@ -216,6 +233,7 @@ const DotGrid = ({
       }
     };
 
+    // Fungsi pas layar di-klik: Bikin efek ledakan melingkar (shockwave) yang mementalkan titik-titik terdekat
     const onClick = e => {
       const rect = canvasRef.current.getBoundingClientRect();
       const cx = e.clientX - rect.left;
@@ -225,7 +243,7 @@ const DotGrid = ({
         if (dist < shockRadius && !dot._inertiaApplied) {
           dot._inertiaApplied = true;
           gsap.killTweensOf(dot);
-          const falloff = Math.max(0, 1 - dist / shockRadius);
+          const falloff = Math.max(0, 1 - dist / shockRadius); // Semakin jauh dari klik, gaya dorongnya makin kecil
           const pushX = (dot.cx - cx) * shockStrength * falloff;
           const pushY = (dot.cy - cy) * shockStrength * falloff;
           gsap.to(dot, {

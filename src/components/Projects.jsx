@@ -1,6 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { useLanguage } from '../context/LanguageContext';
-import { translations } from '../translations';
+import { projects } from '../data/portfolioData';
 
 const GitHubIcon = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
@@ -16,8 +15,6 @@ const ExternalIcon = () => (
 
 export const Projects = () => {
   const sectionRef = useRef(null);
-  const { lang } = useLanguage();
-  const t = translations[lang].projects;
 
   const gradients = {
     'sakupintar-ai': 'from-cyan-900/40 to-slate-800',
@@ -46,7 +43,7 @@ export const Projects = () => {
 
     if (sectionRef.current) observer.observe(sectionRef.current);
 
-    // Reset visibility to re-animate on lang switch
+    // Reset opacity biar animasinya ke-trigger ulang pas bahasa diubah
     const currentCards = sectionRef.current?.querySelectorAll('[data-card]');
     currentCards?.forEach(card => {
       card.style.opacity = '0';
@@ -54,7 +51,7 @@ export const Projects = () => {
     });
 
     return () => observer.disconnect();
-  }, [lang]);
+  }, []);
 
   return (
     <section
@@ -62,48 +59,48 @@ export const Projects = () => {
       ref={sectionRef}
       className="py-24 md:py-40 px-6 md:px-20 relative overflow-hidden"
     >
-      {/* Background Ornaments */}
+      {/* Elemen dekoratif pendaran cahaya (glow orbs) di background */}
       <div className="absolute left-1/2 top-0 -translate-x-1/2 w-full max-w-4xl h-64 bg-cyan-500/5 rounded-full blur-[100px] pointer-events-none" />
       <div className="absolute right-0 bottom-1/4 w-96 h-96 bg-purple-500/5 rounded-full blur-[120px] pointer-events-none" />
 
       <div className="max-w-7xl mx-auto relative z-10">
-        {/* Header */}
+        {/* Bagian Judul Section Proyek */}
         <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4 mb-20 md:mb-28">
           <div className="relative">
             <p className="text-xs font-semibold tracking-[0.2em] text-cyan-400 uppercase mb-3 flex items-center gap-4">
               <span className="w-12 h-px bg-cyan-400/50 block"></span>
-              {t.title}
+              Karya Terpilih
             </p>
             <h2 className="text-4xl md:text-5xl font-black text-white leading-tight tracking-tight">
-              {t.headline}
+              Beberapa sorotan dari karya terbaru.
             </h2>
           </div>
           <p className="text-slate-400 text-sm md:text-base max-w-sm leading-relaxed lg:text-right">
-            {t.sub}
+            Setiap proyek dibangun agar terasa tajam, ekspresif, dan mudah dinavigasi di semua ukuran layar.
           </p>
         </div>
 
-        {/* Cards Grid - Asymmetric Layout */}
+        {/* Grid Kartu Proyek - Kita susun pake gaya Asimetris Masonry biar estetik */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 pb-12 lg:pb-32">
-          {t.items.map((project, index) => {
-            // Calculate staggering margin for asymmetric layout
+          {projects.map((project, index) => {
+            // Ngitung margin bertingkat biar posisinya naik-turun selang-seling (masonry palsu)
             const marginClass = index % 3 === 0 ? 'lg:translate-y-0' : index % 3 === 1 ? 'lg:translate-y-16' : 'lg:translate-y-32';
 
             return (
               <div
-                key={`${project.id}-${lang}`}
+                key={project.id}
                 data-card
                 id={`project-${project.id}`}
                 className={`w-full ${marginClass}`}
                 style={{ opacity: 0, transform: 'translateY(40px)', transition: 'opacity 0.7s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1)' }}
               >
-                {/* Inner Card handles pure CSS hover */}
+                {/* Bagian dalem kartu: nanganin efek hover murni pake class CSS Tailwind */}
                 <div className="group relative h-full rounded-[2rem] border border-white/5 bg-[#0a0f24] overflow-hidden transition-all duration-500 hover:-translate-y-4 hover:shadow-[0_20px_40px_-15px_rgba(34,211,238,0.15)] hover:border-cyan-500/30 flex flex-col">
                   
-                  {/* Subtle inner glow */}
+                  {/* Efek pendaran cahaya halus di dalem kartu pas di-hover */}
                   <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none bg-[radial-gradient(ellipse_at_top,rgba(34,211,238,0.1),transparent_70%)]" />
 
-                  {/* Image Container */}
+                  {/* Bagian Gambar Sampul Proyek */}
                   <div className={`h-56 bg-gradient-to-br ${gradients[project.id]} relative overflow-hidden group-hover:after:absolute group-hover:after:inset-0 group-hover:after:bg-black/10`}>
                     {project.image ? (
                       <img src={project.image} alt={project.title} loading="lazy" className="w-full h-full object-cover opacity-70 mix-blend-overlay group-hover:mix-blend-normal group-hover:opacity-100 group-hover:scale-[1.03] transition-all duration-700" />
@@ -112,7 +109,7 @@ export const Projects = () => {
                     )}
                   </div>
 
-                  {/* Content Container */}
+                  {/* Wadah Konten: Judul, Deskripsi, Tech Tags, dan Tombol Demo/Code */}
                   <div className="p-8 flex flex-col flex-1 relative z-10">
                     <h3 className="text-white font-bold text-xl mb-3 group-hover:text-cyan-400 transition-colors duration-300">{project.title}</h3>
                     <p className="text-slate-400 text-sm leading-relaxed mb-6 flex-1">{project.description}</p>

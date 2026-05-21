@@ -1,12 +1,8 @@
 import { useState, useEffect } from 'react';
-import { useLanguage } from '../context/LanguageContext';
-import { translations } from '../translations';
 
 export const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const { lang } = useLanguage();
-  const t = translations[lang].nav;
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -15,10 +11,10 @@ export const Navbar = () => {
   }, []);
 
   const navLinks = [
-    { label: t.home, href: '#home' },
-    { label: t.about, href: '#about' },
-    { label: t.projects, href: '#projects' },
-    { label: t.contact, href: '#contact' },
+    { label: 'Beranda', href: '#home' },
+    { label: 'Tentang', href: '#about' },
+    { label: 'Proyek', href: '#projects' },
+    { label: 'Kontak', href: '#contact' },
   ];
 
   const scrollTo = (href) => {
@@ -34,7 +30,7 @@ export const Navbar = () => {
       }`}
     >
       <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-        {/* Logo */}
+        {/* Logo pengenal & Tombol kembali ke Beranda */}
         <button
           onClick={() => scrollTo('#home')}
           className="flex items-center gap-3 group"
@@ -47,11 +43,11 @@ export const Navbar = () => {
           </div>
           <div className="text-left hidden sm:block">
             <p className="text-white text-sm font-semibold leading-none">Duta Suksesi F.</p>
-            <p className="text-white/40 text-xs mt-0.5">{t.role}</p>
+            <p className="text-white/40 text-xs mt-0.5">Siswa Pengembangan Perangkat Lunak</p>
           </div>
         </button>
 
-        {/* Desktop Nav */}
+        {/* Menu Navigasi Layar Lebar (Desktop) */}
         <div className="hidden md:flex items-center gap-8">
           {navLinks.map((link) => (
             <button
@@ -65,7 +61,7 @@ export const Navbar = () => {
           ))}
         </div>
 
-        {/* Mobile Controls */}
+        {/* Tombol Hamburger Menu untuk Layar HP (Mobile) */}
         <div className="flex items-center gap-4 md:hidden">
           <button
             className="text-white/60 hover:text-white transition"
@@ -86,7 +82,7 @@ export const Navbar = () => {
         </div>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Tampilan Daftar Menu drop-down (Khusus Mobile) */}
       {menuOpen && (
         <div className="md:hidden bg-[#020617]/95 backdrop-blur-md border-t border-white/5 px-6 py-4 flex flex-col gap-4">
           {navLinks.map((link) => (

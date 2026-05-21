@@ -1,6 +1,4 @@
 import { useEffect, useRef } from 'react';
-import { useLanguage } from '../context/LanguageContext';
-import { translations } from '../translations';
 
 const MailIcon = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
@@ -51,8 +49,6 @@ const contacts = [
 
 export const Contact = () => {
   const sectionRef = useRef(null);
-  const { lang } = useLanguage();
-  const t = translations[lang].contact;
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -75,7 +71,7 @@ export const Contact = () => {
 
     if (sectionRef.current) observer.observe(sectionRef.current);
 
-    // Reset for lang change
+    // Reset nilai transisi kalo section ini pertama kali dimuat biar animasi fade-reveal-nya ke-trigger ulang
     const innerItems = sectionRef.current?.querySelectorAll('[data-reveal]');
     innerItems?.forEach(item => {
       item.style.opacity = '0';
@@ -83,7 +79,7 @@ export const Contact = () => {
     });
 
     return () => observer.disconnect();
-  }, [lang]);
+  }, []);
 
   return (
     <section
@@ -96,27 +92,24 @@ export const Contact = () => {
           <div>
             <p
               data-reveal
-              key={`ct-title-${lang}`}
               className="text-xs font-semibold tracking-[0.2em] text-white/30 uppercase mb-4"
               style={{ opacity: 0, transform: 'translateY(20px)', transition: 'all 0.6s ease' }}
             >
-              {t.title}
+              Kontak
             </p>
             <h2
               data-reveal
-              key={`ct-head-${lang}`}
               className="text-3xl md:text-4xl font-bold text-white leading-tight mb-5"
               style={{ opacity: 0, transform: 'translateY(20px)', transition: 'all 0.6s ease' }}
             >
-              {t.headline}
+              Mari kita bicara & buat sesuatu yang keren.
             </h2>
             <p
               data-reveal
-              key={`ct-sub-${lang}`}
               className="text-white/50 text-sm leading-relaxed"
               style={{ opacity: 0, transform: 'translateY(20px)', transition: 'all 0.6s ease' }}
             >
-              {t.sub} <br /> {t.reachOut}
+              Terbuka untuk kolaborasi, proyek freelance, atau sekadar obrolan teknologi. <br /> Hubungi saya lewat salah satu kanal di bawah ini.
             </p>
           </div>
 
@@ -149,3 +142,4 @@ export const Contact = () => {
     </section>
   );
 };
+

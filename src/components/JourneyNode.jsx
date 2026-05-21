@@ -10,16 +10,16 @@ export const JourneyNode = ({ data, index, isLeft }) => {
       transition={{ duration: 0.5, delay: index * 0.1 }}
       className={`relative w-full flex ${isLeft ? 'md:justify-start' : 'md:justify-end'} justify-center mb-16 md:mb-24 group`}
     >
-      {/* Node connecting point to center line (Desktop only) */}
+      {/* Garis penghubung node ke garis tengah (khusus layar desktop) */}
       <div className={`absolute top-1/2 -translate-y-1/2 w-[calc(5%-1rem)] h-px bg-cyan-500/30 hidden md:block ${isLeft ? 'right-[45%]' : 'left-[45%]'}`} />
       
-      {/* Center dot (Desktop only) */}
+      {/* Titik bulat di tengah garis timeline (khusus layar desktop) */}
       <div className="absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-cyan-400 shadow-[0_0_15px_rgba(34,211,238,0.8)] z-10 hidden md:block" />
 
       <div
         className="relative w-full md:w-[45%] rounded-2xl p-[1px] overflow-hidden bg-white/5 border border-white/10 transition-all duration-300 group-hover:shadow-[0_0_30px_rgba(139,92,246,0.3)] z-10 group-hover:z-20 md:group-hover:scale-[1.02]"
       >
-        {/* Static Glow Effect on hover instead of mouse tracking */}
+        {/* Efek cahaya radial statis pas hover (ga usah tracking mouse biar enteng) */}
         <div 
           className="pointer-events-none absolute inset-0 opacity-0 transition duration-300 group-hover:opacity-100 hidden md:block bg-[radial-gradient(ellipse_at_center,rgba(139,92,246,0.15),transparent_70%)]"
         />
@@ -57,7 +57,7 @@ export const JourneyNode = ({ data, index, isLeft }) => {
               </div>
             )}
             
-            {/* Holographic Overlay on Image */}
+            {/* Lapisan gradasi holografik di atas gambar pas di-hover */}
             <div className="absolute inset-0 bg-gradient-to-tr from-purple-500/20 via-cyan-400/10 to-transparent mix-blend-overlay opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
           </div>
 

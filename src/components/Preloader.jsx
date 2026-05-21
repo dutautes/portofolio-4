@@ -5,21 +5,22 @@ export const Preloader = ({ onComplete, onExitStart }) => {
   const [showShutter, setShowShutter] = useState(true);
   const [shutterExit, setShutterExit] = useState(false);
 
-  useEffect(() => {
+    useEffect(() => {
     let current = 0;
     const interval = setInterval(() => {
+      // Nambah persentase secara acak biar keliatan kayak lagi mikir/proses beneran
       current += Math.floor(Math.random() * 5) + 1;
       if (current >= 100) {
         current = 100;
         clearInterval(interval);
         
-        // When counting is 100%, start shutter exit
+        // Pas hitungan loading udah nyampe 100%, mulai animasi buka tirai (shutter exit)
         setTimeout(() => {
           setShutterExit(true);
           if (onExitStart) onExitStart();
         }, 300);
 
-        // After shutter animation finishes (1000ms), unmount
+        // Setelah animasi tirai selesai (1 detik), copot preloader dari DOM biar ga nahan memori
         setTimeout(() => {
           if (onComplete) onComplete();
           setShowShutter(false);
@@ -35,7 +36,7 @@ export const Preloader = ({ onComplete, onExitStart }) => {
 
   return (
     <div className="fixed inset-0 z-[60] bg-transparent pointer-events-none">
-      {/* Background layer during counting */}
+      {/* Lapisan background hitam pekat pas angka loading berjalan */}
       <div className={`absolute inset-0 bg-[#020617] flex flex-col items-center justify-center pointer-events-auto transition-opacity duration-500 ${shutterExit ? 'opacity-0' : 'opacity-100'}`}>
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl" />
         
@@ -55,7 +56,7 @@ export const Preloader = ({ onComplete, onExitStart }) => {
         </div>
       </div>
 
-      {/* Shutter layers for exit animation */}
+      {/* Lapisan tirai hitam (shutter) buat efek transisi menyapu ke atas */}
       <div 
         className={`absolute inset-0 bg-[#020617] pointer-events-auto transition-transform duration-1000 ease-[cubic-bezier(0.85,0,0.15,1)] origin-top ${
           shutterExit ? 'scale-y-0' : 'scale-y-100'
