@@ -54,7 +54,7 @@ export const achievements = [
     issue_date: "06 Maret 2026",
     expiration_date: "06 Maret 2029",
     credential_url: "https://dicoding.com/certificates/81P208WWNZOY",
-    image_url: "/images/certificates/belajar-membuat-aplikasi-web-dengan-react.png"
+    image_url: "/images/certificates/belajar_membuat_aplikasi_web_dengan_react.png"
   },
   {
     id: "cert-4",
