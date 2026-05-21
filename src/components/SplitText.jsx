@@ -20,7 +20,6 @@ const SplitText = ({
   textAlign = 'center',
   tag = 'p',
   onLetterAnimationComplete,
-  isReady = true
 }) => {
   const ref = useRef(null);
   const animationCompletedRef = useRef(false);
@@ -45,7 +44,7 @@ const SplitText = ({
   // useGSAP itu hook aman bawaan GreenSock khusus buat React
   useGSAP(
     () => {
-      if (!isReady || !ref.current || !text || !fontsLoaded) return;
+      if (!ref.current || !text || !fontsLoaded) return;
       if (animationCompletedRef.current) return;
       
       const el = ref.current;
@@ -122,7 +121,6 @@ const SplitText = ({
     },
     {
       dependencies: [
-        isReady,
         text,
         delay,
         duration,

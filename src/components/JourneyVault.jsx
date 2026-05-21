@@ -4,7 +4,7 @@ import { achievements } from '../data/portfolioData';
 import { JourneyNode } from './JourneyNode';
 import { ChevronDown } from 'lucide-react';
 
-export const JourneyVault = ({ isReady }) => {
+export const JourneyVault = () => {
   const [visibleCount, setVisibleCount] = useState(4);
 
   const handleLoadMore = () => {
@@ -12,7 +12,7 @@ export const JourneyVault = ({ isReady }) => {
   };
 
   return (
-    <section id="journey" className={`relative py-32 overflow-hidden bg-[#020617] transition-opacity duration-1000 ${isReady ? 'opacity-100' : 'opacity-0'}`}>
+    <section id="journey" className="relative py-32 overflow-hidden bg-[#020617]">
       {/* Latar belakang halaman & Tulisan teks besar samar (watermark) */}
       <div className="absolute inset-0 pointer-events-none flex items-center justify-center overflow-hidden">
         <h2 className="text-[10rem] md:text-[20rem] font-black text-white/[0.02] tracking-tighter whitespace-nowrap rotate-90 md:rotate-0 select-none">

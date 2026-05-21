@@ -2,13 +2,10 @@ import { useEffect, useRef } from 'react';
 import SplitText from './SplitText';
 import Lanyard from './Lanyard';
 
-export const Hero = ({ isReady }) => {
+export const Hero = () => {
   const containerRef = useRef(null);
 
   useEffect(() => {
-    // Kalo preloader belum selesai, ga usah jalanin animasi fade-in dulu
-    if (!isReady) return;
-    
     const el = containerRef.current;
     if (!el) return;
 
@@ -25,7 +22,7 @@ export const Hero = ({ isReady }) => {
         }, 100);
       });
     });
-  }, [isReady]);
+  }, []);
 
   // Fungsi scroll halus (smooth scroll) pas tombol diklik
   const scrollTo = (href) => {
@@ -57,7 +54,6 @@ export const Hero = ({ isReady }) => {
               splitType="words"
               textAlign="left"
               tag="span"
-              isReady={isReady}
             />{" "}
             <SplitText
               key="h2"
@@ -68,7 +64,6 @@ export const Hero = ({ isReady }) => {
               splitType="words"
               textAlign="left"
               tag="span"
-              isReady={isReady}
             />
             <br />
             <SplitText
@@ -80,7 +75,6 @@ export const Hero = ({ isReady }) => {
               splitType="words"
               textAlign="left"
               tag="span"
-              isReady={isReady}
             />
           </div>
 
@@ -113,7 +107,7 @@ export const Hero = ({ isReady }) => {
 
         {/* Sisi Kanan: Gantungan ID Card 3D interaktif (Lanyard) */}
         <div data-fade className="flex-1 w-full h-[600px] lg:h-[800px] relative -mt-20 lg:mt-0">
-          {isReady && <Lanyard position={[0, 0, 20]} gravity={[0, -20, 0]} />}
+          <Lanyard position={[0, 0, 20]} gravity={[0, -20, 0]} />
         </div>
       </div>
     </section>
