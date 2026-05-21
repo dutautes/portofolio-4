@@ -79,18 +79,14 @@ export const Projects = () => {
           </p>
         </div>
 
-        {/* Grid Kartu Proyek - Kita susun pake gaya Asimetris Masonry biar estetik */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 pb-12 lg:pb-32">
-          {projects.map((project, index) => {
-            // Ngitung margin bertingkat biar posisinya naik-turun selang-seling (masonry palsu)
-            const marginClass = index % 3 === 0 ? 'lg:translate-y-0' : index % 3 === 1 ? 'lg:translate-y-16' : 'lg:translate-y-32';
-
-            return (
+        {/* Grid Kartu Proyek */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+          {projects.map((project) => (
               <div
                 key={project.id}
                 data-card
                 id={`project-${project.id}`}
-                className={`w-full ${marginClass}`}
+                className="w-full"
                 style={{ opacity: 0, transform: 'translateY(40px)', transition: 'opacity 0.7s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1)' }}
               >
                 {/* Bagian dalem kartu: nanganin efek hover murni pake class CSS Tailwind */}
@@ -147,8 +143,7 @@ export const Projects = () => {
                   </div>
                 </div>
               </div>
-            );
-          })}
+          ))}
         </div>
       </div>
     </section>
