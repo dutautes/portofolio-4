@@ -71,7 +71,6 @@ export const Contact = () => {
 
     if (sectionRef.current) observer.observe(sectionRef.current);
 
-    // Reset nilai transisi kalo section ini pertama kali dimuat biar animasi fade-reveal-nya ke-trigger ulang
     const innerItems = sectionRef.current?.querySelectorAll('[data-reveal]');
     innerItems?.forEach(item => {
       item.style.opacity = '0';

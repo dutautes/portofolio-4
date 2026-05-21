@@ -1,4 +1,4 @@
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { achievements } from '../data/portfolioData';
 import { JourneyNode } from './JourneyNode';
@@ -53,16 +53,14 @@ export const JourneyVault = () => {
           <div className="absolute top-0 bottom-0 left-8 w-px bg-gradient-to-b from-transparent via-cyan-500/30 to-transparent md:hidden block" />
 
           <div className="flex flex-col relative w-full pt-10">
-            <AnimatePresence mode="popLayout">
-              {achievements.slice(0, visibleCount).map((item, index) => (
-                <JourneyNode 
-                  key={item.id} 
-                  data={item} 
-                  index={index} 
-                  isLeft={index % 2 === 0} 
-                />
-              ))}
-            </AnimatePresence>
+            {achievements.slice(0, visibleCount).map((item, index) => (
+              <JourneyNode
+                key={item.id}
+                data={item}
+                index={index}
+                isLeft={index % 2 === 0}
+              />
+            ))}
           </div>
           
           {/* Tombol buat nampilin sertifikat berikutnya (Load More) */}

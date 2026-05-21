@@ -13,14 +13,14 @@ const ExternalIcon = () => (
   </svg>
 );
 
+const gradients = {
+  'sakupintar-ai': 'from-cyan-900/40 to-slate-800',
+  'reminder-app': 'from-blue-900/40 to-slate-800',
+  'covid-tracker': 'from-purple-900/40 to-slate-800',
+};
+
 export const Projects = () => {
   const sectionRef = useRef(null);
-
-  const gradients = {
-    'sakupintar-ai': 'from-cyan-900/40 to-slate-800',
-    'reminder-app': 'from-blue-900/40 to-slate-800',
-    'covid-tracker': 'from-purple-900/40 to-slate-800'
-  };
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -43,7 +43,6 @@ export const Projects = () => {
 
     if (sectionRef.current) observer.observe(sectionRef.current);
 
-    // Reset opacity biar animasinya ke-trigger ulang pas bahasa diubah
     const currentCards = sectionRef.current?.querySelectorAll('[data-card]');
     currentCards?.forEach(card => {
       card.style.opacity = '0';

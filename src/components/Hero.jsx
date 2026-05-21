@@ -106,7 +106,7 @@ export const Hero = () => {
         </div>
 
         {/* Sisi Kanan: Gantungan ID Card 3D interaktif (Lanyard) */}
-        <div data-fade className="flex-1 w-full h-600px lg:h-800px relative -mt-20 lg:mt-0">
+        <div data-fade className="flex-1 w-full h-[600px] lg:h-[800px] relative -mt-20 lg:mt-0">
           <Lanyard position={[0, 0, 20]} gravity={[0, -20, 0]} />
         </div>
       </div>

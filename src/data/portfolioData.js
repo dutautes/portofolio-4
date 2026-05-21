@@ -14,7 +14,7 @@ export const projects = [
     title: 'Reminder App',
     description: 'Sistem manajemen tugas CRUD berbasis web dengan arsitektur MVC Laravel untuk efisiensi aktivitas harian.',
     tags: ['Laravel', 'MySQL', 'Tailwind CSS', 'MVC'],
-    github: 'https://github.com/dutautes/remindme-app',
+    github: 'https://github.com/dutautes/laravel-reminder-app',
     demo: 'https://reminder-app.demo'
   },
   {

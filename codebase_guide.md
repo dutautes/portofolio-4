@@ -1,35 +1,44 @@
 # Panduan Kode Portfolio Duta Suksesi F.
 
-Dokumen ini menjelaskan struktur proyek, fungsi setiap komponen, dan package/dependensi yang digunakan. Dibuat sebagai referensi cepat untuk developer yang ingin memahami atau mempresentasikan kode ini.
+Dokumen ini menjelaskan struktur proyek, fungsi setiap komponen, dan package/dependensi yang digunakan. Dibuat sebagai referensi cepat untuk memahami atau mengembangkan kode ini.
 
 ---
 
 ## Struktur Proyek
 
 ```
-src/
-├── App.jsx                   # Root component, titik masuk utama aplikasi
-├── App.css                   # Global CSS (font, scrollbar, dsb.)
-├── main.jsx                  # Entry point React (render ke DOM)
-├── data/
-│   └── portfolioData.js      # Data statis proyek & sertifikasi (Bahasa Indonesia)
-├── components/
-│   ├── Navbar.jsx            # Navigasi atas dengan scroll detection & mobile menu
-│   ├── Hero.jsx              # Section landing page dengan animasi fade & Lanyard 3D
-│   ├── About.jsx             # Section profil dengan IntersectionObserver reveal
-│   ├── Projects.jsx          # Grid kartu proyek dengan masonry layout asimetris
-│   ├── JourneyVault.jsx      # Timeline sertifikasi dengan pagination "Lihat Lebih Banyak"
-│   ├── JourneyNode.jsx       # Satu kartu sertifikat di dalam timeline
-│   ├── Contact.jsx           # Section kontak dengan link sosial
-│   ├── Footer.jsx            # Footer dengan tagline dan ikon sosial
-│   ├── Preloader.jsx         # Layar loading animasi (sementara di-comment di App.jsx)
-│   ├── DotGrid.jsx           # Latar interaktif titik-titik Canvas yang bereaksi terhadap mouse
-│   ├── SplitText.jsx         # Animasi teks per huruf/kata menggunakan GSAP SplitText
-│   └── Lanyard.jsx           # ID Card 3D interaktif dengan fisika tali (Three.js + Rapier)
-└── assets/
-    └── lanyard/
-        ├── card.glb           # Model 3D kartu identitas
-        └── lanyard.png        # Tekstur tali gantungan
+portofolio-duta/
+├── index.html
+├── vite.config.js
+├── package.json
+├── public/
+│   ├── favicon.svg
+│   ├── icons.svg
+│   └── images/
+│       ├── certificates/     # Gambar sertifikat (PNG)
+│       └── projects/         # Gambar thumbnail proyek (PNG)
+└── src/
+    ├── main.jsx              # Entry point React (render ke DOM)
+    ├── index.css             # Global CSS: font, scrollbar, Tailwind, custom utilities
+    ├── App.jsx               # Root component, merakit semua section
+    ├── data/
+    │   └── portfolioData.js  # Satu-satunya sumber data: projects[] & achievements[]
+    ├── components/
+    │   ├── Navbar.jsx        # Navigasi fixed atas dengan scroll detection & mobile menu
+    │   ├── Hero.jsx          # Landing section: SplitText + Lanyard 3D
+    │   ├── About.jsx         # Profil, tech stack, pendidikan
+    │   ├── Projects.jsx      # Grid kartu proyek dengan masonry asimetris
+    │   ├── JourneyVault.jsx  # Timeline sertifikasi dengan pagination
+    │   ├── JourneyNode.jsx   # Kartu individual satu sertifikat
+    │   ├── Contact.jsx       # Link kontak (email, GitHub, LinkedIn)
+    │   ├── Footer.jsx        # Footer tagline + ikon sosial
+    │   ├── SplitText.jsx     # Animasi teks per huruf/kata via GSAP
+    │   └── Lanyard.jsx       # ID Card 3D interaktif (Three.js + Rapier physics)
+    └── assets/
+        ├── hero.png
+        └── lanyard/
+            ├── card.glb      # Model 3D kartu identitas
+            └── lanyard.png   # Tekstur tali gantungan
 ```
 
 ---
@@ -37,68 +46,67 @@ src/
 ## Penjelasan Setiap Komponen
 
 ### `App.jsx`
-Titik masuk utama yang merakit semua section portfolio secara berurutan. Mengatur state `isReady` yang dilewatkan ke komponen anak untuk menunda animasi sampai halaman siap.
+Root component tanpa state. Merakit semua section secara berurutan di dalam satu wrapper `div` dengan background `#020617`.
 
 ### `src/data/portfolioData.js`
-Berkas data statis yang menyimpan array `projects` (daftar proyek) dan `achievements` (daftar sertifikasi) dalam Bahasa Indonesia. Diimpor langsung oleh `Projects.jsx` dan `JourneyVault.jsx`. **Ini adalah satu-satunya tempat yang perlu diubah jika ingin menambah/mengedit proyek atau sertifikat.**
+Sumber data tunggal untuk seluruh konten dinamis. Berisi dua export:
+- `projects[]` — dipakai oleh `Projects.jsx`
+- `achievements[]` — dipakai oleh `JourneyVault.jsx`
+
+**Ini satu-satunya file yang perlu diubah untuk menambah/mengedit proyek atau sertifikat.**
 
 ### `Navbar.jsx`
-Navigasi tetap (fixed) di atas halaman. Mendeteksi scroll lewat `window.addEventListener('scroll')` dan menambahkan efek `backdrop-blur` setelah pengguna scroll lebih dari 20px. Punya menu hamburger untuk layar mobile.
+Navigasi fixed di atas halaman. Mendeteksi scroll via `window.addEventListener('scroll')` dan menambahkan `backdrop-blur` + border setelah scroll > 20px. Punya hamburger menu untuk mobile yang menutup otomatis setelah link diklik.
 
 ### `Hero.jsx`
-Section pembuka portofolio. Menampilkan teks sambutan yang dipecah per kata menggunakan `SplitText`, deskripsi singkat, dua tombol aksi, dan ID Card 3D interaktif `Lanyard` di sisi kanan.
+Section pembuka. Menampilkan teks sambutan yang dianimasikan per kata menggunakan `SplitText`, deskripsi singkat, dua tombol scroll (ke `#projects` dan `#contact`), serta `Lanyard` 3D di sisi kanan. Elemen dengan atribut `data-fade` dianimasikan masuk secara staggered via `requestAnimationFrame` saat mount.
 
 ### `About.jsx`
-Section profil diri. Menggunakan `IntersectionObserver` bawaan browser untuk memunculkan elemen satu per satu (staggered reveal) saat user men-scroll ke section ini. Menampilkan bio, daftar tech stack, dan informasi pendidikan.
+Section profil. Menggunakan `IntersectionObserver` untuk memunculkan elemen `[data-reveal]` satu per satu (staggered 120ms) saat section masuk viewport. Menampilkan bio, daftar tech stack, dan info pendidikan.
 
 ### `Projects.jsx`
-Menampilkan grid kartu proyek dari data di `portfolioData.js`. Layout menggunakan grid 3 kolom dengan offset vertikal (masonry palsu) yang berbeda tiap kolom. Animasi kartu muncul saat di-scroll menggunakan `IntersectionObserver`.
+Grid kartu proyek dari `portfolioData.js`. Layout 3 kolom dengan offset vertikal berbeda tiap kolom (masonry palsu via `lg:translate-y-*`). Animasi kartu muncul saat di-scroll menggunakan `IntersectionObserver`. Object `gradients` didefinisikan di luar komponen agar tidak dibuat ulang tiap render.
 
 ### `JourneyVault.jsx`
-Menampilkan timeline sertifikasi dari data di `portfolioData.js` menggunakan komponen `JourneyNode`. Fitur "Lihat Lebih Banyak" memunculkan 4 sertifikat tambahan setiap kali diklik. Menggunakan `AnimatePresence` dari Framer Motion untuk animasi masuk/keluar item.
+Timeline sertifikasi dari `portfolioData.js`. Menampilkan 4 item pertama, lalu menambah 4 lagi setiap kali tombol "Lihat Lebih Banyak" diklik (state `visibleCount`). Menggunakan Framer Motion untuk animasi heading saat scroll.
 
 ### `JourneyNode.jsx`
-Kartu individual satu sertifikat dalam timeline. Menampilkan tanggal terbit, judul, ID kredensial, dan gambar sertifikat. Punya efek hover glow radial dan overlay holografik.
+Kartu individual satu sertifikat. Menampilkan tanggal terbit, judul, ID kredensial, gambar sertifikat, dan link "View Credential" (jika ada). Punya efek hover: glow radial, overlay holografik, dan scale ringan. Dianimasikan masuk via `motion.div` dari Framer Motion.
 
 ### `Contact.jsx`
-Section kontak yang menampilkan link ke email, GitHub, dan LinkedIn dalam bentuk kartu klik. Menggunakan `IntersectionObserver` yang sama seperti `About.jsx` untuk animasi reveal.
+Section kontak. Menampilkan tiga link (email, GitHub, LinkedIn) sebagai kartu klik. Menggunakan `IntersectionObserver` yang sama seperti `About.jsx` untuk animasi reveal.
 
 ### `Footer.jsx`
-Bagian bawah halaman yang menampilkan tagline dan ikon sosial (GitHub, LinkedIn, Email). Komponen sederhana tanpa state.
-
-### `Preloader.jsx`
-Layar loading dengan angka persentase yang naik secara acak, diakhiri dengan animasi tirai menyapu ke atas. Saat ini di-comment di `App.jsx`.
-
-### `DotGrid.jsx`
-Background interaktif berupa grid titik-titik yang digambar di HTML5 Canvas. Titik-titik bereaksi terhadap gerakan mouse (didorong menjauh) dan klik (efek ledakan gelombang kejut). Menggunakan `GSAP InertiaPlugin` untuk efek membal saat kembali ke posisi semula.
+Komponen sederhana tanpa state. Menampilkan tagline dan tiga ikon sosial (GitHub, LinkedIn, Email) sebagai SVG inline.
 
 ### `SplitText.jsx`
-Wrapper komponen untuk animasi teks berbasis GSAP. Memecah teks menjadi per huruf (`chars`), per kata (`words`), atau per baris (`lines`), lalu menganimasikannya saat elemen masuk viewport menggunakan `ScrollTrigger`. Menunggu font browser selesai dimuat sebelum memulai (`document.fonts.ready`).
+Wrapper animasi teks berbasis GSAP. Memecah teks menjadi per huruf (`chars`), per kata (`words`), atau per baris (`lines`), lalu menganimasikannya saat elemen masuk viewport via `ScrollTrigger`. Menunggu `document.fonts.ready` sebelum memulai agar kalkulasi posisi huruf akurat.
 
 ### `Lanyard.jsx`
-Simulasi ID Card 3D yang bisa digeser-geser. Dibangun dengan `React Three Fiber` (React wrapper untuk Three.js) dan engine fisika `@react-three/rapier`. Tali (band) disimulasikan dengan 4 sendi fisik yang disambungkan menggunakan `RopeJoint` dan `SphericalJoint`. Kartu bisa ditarik dengan mouse.
+Simulasi ID Card 3D yang bisa ditarik dengan mouse. Dibangun dengan `React Three Fiber` dan engine fisika `@react-three/rapier`. Tali disimulasikan dengan 4 sendi fisik (`RopeJoint` + `SphericalJoint`). Performa disesuaikan otomatis untuk mobile (DPR lebih rendah, timestep fisika 30fps vs 60fps).
 
 ---
 
-## Package & Dependensi Utama
+## Package & Dependensi
 
-| Package | Digunakan Di | Fungsi |
-|---|---|---|
-| `react`, `react-dom` | Semua komponen | Library inti React untuk membangun UI |
-| `vite` | Build tool | Bundler dan dev server yang cepat |
-| `tailwindcss` | Semua komponen | Utility-first CSS framework untuk styling |
-| `gsap` | `DotGrid.jsx`, `SplitText.jsx` | Animasi JavaScript berkinerja tinggi |
-| `@gsap/react` | `SplitText.jsx` | Hook `useGSAP` agar aman dipakai di React |
-| `gsap/ScrollTrigger` | `SplitText.jsx` | Plugin GSAP untuk memicu animasi saat di-scroll |
-| `gsap/SplitText` | `SplitText.jsx` | Plugin GSAP untuk memecah teks di DOM |
-| `gsap/InertiaPlugin` | `DotGrid.jsx` | Plugin GSAP untuk animasi berbasis inersia dan kecepatan |
-| `framer-motion` | `JourneyVault.jsx`, `JourneyNode.jsx` | Animasi deklaratif React (masuk/keluar elemen) |
-| `three` | `Lanyard.jsx` | Library grafis 3D WebGL |
-| `@react-three/fiber` | `Lanyard.jsx` | React renderer untuk Three.js (pakai JSX buat scene 3D) |
-| `@react-three/drei` | `Lanyard.jsx` | Koleksi helper R3F: `Environment`, `Lightformer`, `useGLTF`, `useTexture` |
-| `@react-three/rapier` | `Lanyard.jsx` | Engine fisika 3D berbasis Rapier untuk React Three Fiber |
-| `meshline` | `Lanyard.jsx` | Membuat garis lebar (tali) di Three.js yang tidak bisa dibuat dengan `LineGeometry` biasa |
-| `lucide-react` | `JourneyNode.jsx`, `JourneyVault.jsx` | Library ikon SVG berbasis React |
+| Package | Versi | Digunakan Di | Fungsi |
+|---|---|---|---|
+| `react`, `react-dom` | ^19.2.4 | Semua | Library inti React |
+| `vite` | ^8.0.1 | Build | Bundler & dev server |
+| `@vitejs/plugin-react` | ^6.0.1 | Build | Plugin Vite untuk React (Fast Refresh) |
+| `tailwindcss` | ^4.2.2 | Semua | Utility-first CSS framework |
+| `@tailwindcss/vite` | ^4.2.2 | Build | Integrasi Tailwind v4 via Vite plugin |
+| `gsap` | ^3.14.2 | `SplitText.jsx` | Animasi JavaScript berkinerja tinggi |
+| `@gsap/react` | ^2.1.2 | `SplitText.jsx` | Hook `useGSAP` agar aman di React |
+| `gsap/ScrollTrigger` | (bundled) | `SplitText.jsx` | Memicu animasi saat elemen di-scroll |
+| `gsap/SplitText` | (bundled) | `SplitText.jsx` | Memecah teks di DOM per huruf/kata/baris |
+| `framer-motion` | ^12.39.0 | `JourneyVault.jsx`, `JourneyNode.jsx` | Animasi deklaratif React |
+| `three` | ^0.183.2 | `Lanyard.jsx` | Library grafis 3D WebGL |
+| `@react-three/fiber` | ^9.5.0 | `Lanyard.jsx` | React renderer untuk Three.js |
+| `@react-three/drei` | ^10.7.7 | `Lanyard.jsx` | Helper R3F: `Environment`, `Lightformer`, `useGLTF`, `useTexture` |
+| `@react-three/rapier` | ^2.2.0 | `Lanyard.jsx` | Engine fisika 3D untuk React Three Fiber |
+| `meshline` | ^3.3.1 | `Lanyard.jsx` | Garis lebar (tali) di Three.js |
+| `lucide-react` | ^1.16.0 | `JourneyNode.jsx`, `JourneyVault.jsx` | Ikon SVG berbasis React |
 
 ---
 
@@ -106,8 +114,18 @@ Simulasi ID Card 3D yang bisa digeser-geser. Dibangun dengan `React Three Fiber`
 
 ```
 src/data/portfolioData.js
-  ├── projects[]  →  Projects.jsx  →  Kartu Proyek
+  ├── projects[]      →  Projects.jsx  →  Kartu Proyek
   └── achievements[]  →  JourneyVault.jsx  →  JourneyNode.jsx  →  Kartu Sertifikat
 ```
 
-Semua teks UI sudah ditulis langsung (hardcoded) dalam **Bahasa Indonesia** di masing-masing komponen. Untuk mengubah teks, cukup edit langsung di file komponen yang bersangkutan.
+---
+
+## Catatan Teknis
+
+- **Tidak ada state management global** — semua state bersifat lokal di komponen masing-masing.
+- **Animasi scroll** di `About.jsx`, `Projects.jsx`, dan `Contact.jsx` menggunakan `IntersectionObserver` bawaan browser (tanpa library tambahan).
+- **Animasi teks** di `Hero.jsx` menggunakan GSAP via `SplitText.jsx`.
+- **Animasi timeline** di `JourneyVault.jsx` dan `JourneyNode.jsx` menggunakan Framer Motion.
+- **Semua teks UI** ditulis langsung (hardcoded) dalam Bahasa Indonesia di masing-masing komponen.
+- **Custom utilities CSS** (`bg-white/3`, `bg-white/8`, `border-white/8`, dll.) didefinisikan manual di `index.css` sebagai workaround untuk nilai opacity non-standar di Tailwind v4.
+- **Font** menggunakan Inter dari Google Fonts, dimuat via `@import` di `index.css`.

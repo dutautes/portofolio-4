@@ -29,7 +29,6 @@ export const About = () => {
 
     if (sectionRef.current) observer.observe(sectionRef.current);
 
-    // Kalo bahasa diganti, kita reset opacity-nya ke 0 lagi biar animasinya ke-trigger ulang
     const items = sectionRef.current?.querySelectorAll('[data-reveal]');
     items?.forEach(item => {
       item.style.opacity = '0';
