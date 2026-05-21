@@ -24,7 +24,7 @@ export const projects = [
     description: 'Visualisasi data real-time perkembangan COVID-19 global dan lokal melalui grafik interaktif dan statistik informatif.',
     tags: ['React.js', 'REST API', 'Chart.js', 'Data Viz'],
     github: 'https://github.com/dutautes/info-covid-react',
-    demo: 'https://covid-tracker.demo'
+    demo: 'https://infocovid-duta.vercel.app'
   }
 ];
 
